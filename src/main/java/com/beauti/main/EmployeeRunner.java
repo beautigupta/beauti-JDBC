@@ -16,10 +16,12 @@ public class EmployeeRunner {
 		EmployeeDao edao = new EmployeeDaoImpl();
 		Employee emp = new Employee(18, "Sunny", "Male", 67000);
 		
-		edao.saveEmp(emp);
+		//edao.saveEmp(emp);
 		//edao.updateEmp(emp);
 		//edao.deleteEmpById(12);
 		//edao.printAllEmps();
+		//edao.getEmpById(4);
+		edao.getEmpByName("beauti");
 		System.out.println("Query executed...............");
 
 		

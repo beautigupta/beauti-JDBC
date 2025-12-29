@@ -66,7 +66,8 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	public Employee getEmpById(int id) throws SQLException{
 		Statement statement = connection.createStatement();
 //		statement.executeQuery(SELECT_QUERY);
-		ResultSet resultSet = statement.executeQuery("SELECT * FROM EMPLOYEE WHERE ID=%d");
+		String query = String.format("SELECT * FROM EMPLOYEE WHERE ID=%d", id);
+		ResultSet resultSet = statement.executeQuery(query);
 
 		while (resultSet.next()) {
 			System.out.println("ID = " + resultSet.getInt(1) + "\t NAME = " + resultSet.getString(2) + "\t GENDER = "
@@ -80,7 +81,8 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	public Employee getEmpByName(String name) throws SQLException{
 		Statement statement = connection.createStatement();
 //		statement.executeQuery(SELECT_QUERY);
-		ResultSet resultSet = statement.executeQuery("SELECT * FROM EMPLOYEE WHERE ID='%s'");
+		String query = String.format("SELECT * FROM EMPLOYEE WHERE NAME='%s'" , name);
+		ResultSet resultSet = statement.executeQuery(query);
 
 		while (resultSet.next()) {
 			System.out.println("ID = " + resultSet.getInt(1) + "\t NAME = " + resultSet.getString(2) + "\t GENDER = "
