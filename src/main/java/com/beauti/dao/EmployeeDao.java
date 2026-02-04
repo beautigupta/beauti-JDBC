@@ -2,6 +2,7 @@ package com.beauti.dao;
 
 
 
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import com.beauti.entity.Employee;
 
 public interface EmployeeDao {
 
-	public void saveEmpByPS(Employee e);
+	public void saveEmp(Employee e);
 
 	public void updateEmp(Employee e) throws SQLException;
 
@@ -26,3 +27,5 @@ public interface EmployeeDao {
 	public void printAllEmps() throws SQLException;
 
 }
+
+
