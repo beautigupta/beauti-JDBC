@@ -1,6 +1,9 @@
 package com.beauti.dao;
+
+
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,20 +11,21 @@ import java.util.List;
 
 import com.beauti.entity.Employee;
 
-public class EmployeeDaoImpl implements EmployeeDao{
-	
-	private static final String INSERT_QUERY = "INSERT INTO EMPLOYEE (ID , NAME, GENDER, SALARY) VALUES(%d,'%s','%s',%d)";
-	private static final String UPDATE_QUERY = "UPDATE EMPLOYEE SET NAME = '%s' , GENDER = '%s', SALARY= %d WHERE ID = %d";
-	private static final String DELETE_QUERY ="DELETE FROM EMPLOYEE WHERE ID = %d";
+public class EmployeeDaoImpl implements EmployeeDao {
+
+	private static final String INSERT_QUERY = "INSERT INTO EMPLOYEE (ID,NAME,GENDER,SALARY) VALUES(?,?,?,?)";
+	private static final String UPDATE_QUERY = "UPDATE EMPLOYEE SET NAME = ? , GENDER = ? , SALARY = ? WHERE ID = ?";
 	private static final String SELECT_QUERY = "SELECT * FROM EMPLOYEE";
+	private static final String SELECT_BY_NAME = "SELECT * FROM EMPLOYEE WHERE NAME = '%s'";
 
-
-	
 	static Connection connection = null;
-	
+
 	static {
+
 		try {
-			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb", "beauti", "851204");
+
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/mydb", "root", "851204");
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -29,75 +33,77 @@ public class EmployeeDaoImpl implements EmployeeDao{
 	}
 
 	@Override
-	public void saveEmp(Employee e) {
-		try (Statement statement = connection.createStatement()){
-			statement.executeUpdate(String.format(INSERT_QUERY, e.getId(),e.getName(),e.getGender(),e.getSalary()));
-			System.out.println("insert into employee(id,name,gender,salary) values (" + e.getId()+ ",'"+e.getName()+"','"+e.getGender()+"',"+e.getSalary()+")");
-		
+	public void saveEmpByPS(Employee e) {
+
+		try (PreparedStatement ps = connection.prepareStatement("INSERT INTO EMPLOYEE (ID,NAME,GENDER,SALARY) VALUES(?,?,?,?)")) {
+
+			ps.setInt(1, e.getId());
+			ps.setString(2, e.getName());
+			ps.setString(3, e.getGender());
+			ps.setInt(4, e.getSalary());
+			
+			ps.executeUpdate();
+			
+			
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 	}
+
 
 	@Override
 	public void updateEmp(Employee e) throws SQLException {
-		Statement statement = connection.createStatement();
-			statement.executeUpdate(String.format(UPDATE_QUERY, e.getName(),e.getGender(),e.getSalary(),e.getId()));
-			System.out.println(String.format(UPDATE_QUERY, e.getName(),e.getGender(),e.getSalary(),e.getId()));
-		
-		
+		PreparedStatement ps = connection.prepareStatement(UPDATE_QUERY);
+
+			ps.setString(1, e.getName());
+			ps.setString(2, e.getGender());
+			ps.setInt(3, e.getSalary());
+			ps.setInt(4, e.getId());
+			
+			ps.executeUpdate();
+			
+			
 	}
 
+
 	@Override
-	public void deleteEmpById(int id) throws SQLException{
-		Statement statement = connection.createStatement();
-		statement.executeUpdate(String.format(DELETE_QUERY,id));
-		System.out.println(String.format(DELETE_QUERY,id));
-		
-		
+	public void deleteEmpById(int id) throws SQLException {
 		// TODO Auto-generated method stub
 		
 	}
 
+
 	@Override
-	public Employee getEmpById(int id) throws SQLException{
-		Statement statement = connection.createStatement();
-//		statement.executeQuery(SELECT_QUERY);
-		String query = String.format("SELECT * FROM EMPLOYEE WHERE ID=%d", id);
-		ResultSet resultSet = statement.executeQuery(query);
-
-		while (resultSet.next()) {
-			System.out.println("ID = " + resultSet.getInt(1) + "\t NAME = " + resultSet.getString(2) + "\t GENDER = "
-					+ resultSet.getString(3) + "\t SALARY = " + resultSet.getInt(4));
-		}
-
+	public Employee getEmpById(int id) throws SQLException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Employee getEmpByName(String name) throws SQLException{
-		Statement statement = connection.createStatement();
-//		statement.executeQuery(SELECT_QUERY);
-		String query = String.format("SELECT * FROM EMPLOYEE WHERE NAME='%s'" , name);
-		ResultSet resultSet = statement.executeQuery(query);
 
-		while (resultSet.next()) {
-			System.out.println("ID = " + resultSet.getInt(1) + "\t NAME = " + resultSet.getString(2) + "\t GENDER = "
-					+ resultSet.getString(3) + "\t SALARY = " + resultSet.getInt(4));
-		}
+	@Override
+	public Employee getEmpByName(String name) throws SQLException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
+
 	@Override
-	public List<Employee> getAllEmps() {
+	public void printEmpByName(String name) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public List<Employee> getAllEmps() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void printAllEmps() throws SQLException{
+	public void printAllEmps() throws SQLException {
+
 		Statement statement = connection.createStatement();
 //		statement.executeQuery(SELECT_QUERY);
 		ResultSet resultSet = statement.executeQuery("SELECT * FROM EMPLOYEE");
@@ -106,6 +112,7 @@ public class EmployeeDaoImpl implements EmployeeDao{
 			System.out.println("ID = " + resultSet.getInt(1) + "\t NAME = " + resultSet.getString(2) + "\t GENDER = "
 					+ resultSet.getString(3) + "\t SALARY = " + resultSet.getInt(4));
 		}
-	}
+		System.err.println(SELECT_QUERY);
 
+	}
 }
